@@ -9,11 +9,27 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="margin"></div>
+    <header>
+        <h1><span id = 'rock'>Rock</span><span id = 'paper'>Paper</span><span id = 'scissors'>Scissors</span>  </h1>
+    </header>
+
+    <div class="description">
+        <p class = "game-overview"></p>
+        <p class = "game-result"></p>
+        
+    </div>
+    <div class="display">
+        <div class="playerScoreDisplay">Player Score: </div>
+        <div class="computerScoreDisplay">Computer Score: </div>
+    </div>
+
     <div class="buttons">
-        <button class="button" data-value = 'rock'>Rock</button>
-        <button class="button" data-value = 'paper'>Paper</button>
-        <button class="button" data-value = 'scissors'>Scissor</button>
+        <button class="button button-styling" data-value = 'rock' >Rock</button>
+        <button class="button button-styling" data-value = 'paper'>Paper</button>
+        <button class="button button-styling" data-value = 'scissors'>Scissor</button>
+    </div>
+    <div class="reset">
+        <button class="resetGameState button-styling">Reset</button>
     </div>
 </body>
 </html>

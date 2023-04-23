@@ -1,23 +1,39 @@
 // DOM Selectors
 
 const buttons = document.querySelectorAll('.button')
+const playerScoreDisplay = document.querySelector(".playerScoreDisplay")
+const computerScoreDisplay = document.querySelector(".computerScoreDisplay")
+const gameOverview = document.querySelector('.game-overview')
+const gameResult = document.querySelector('.game-result')
+const resetGameState = document.querySelector('.resetGameState')
 
 // Variables
 let playerMove;
+let computerMove;
+let roundWinner;
+let gameOverviewText = "3 Weapons | 5 Lives";
+let gameResultText = "Rock Beats Scissors | Scissors Beats Paper | Paper Beats Rock";
+
 // DOM Functions
-buttons.forEach(playerChoice)
+buttons.forEach(gameLoop)
+resetGameState.addEventListener('click', resetGame)
 
 // Functions
 
+String.prototype.toProperCase = function () {
+    return this.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+};
+
     'Returns Player Move' 
-function playerChoice(button){
+function gameLoop(button){
 
     button.addEventListener('click', () => {
-        let text = button.getAttribute('data-value');
-        playerMove = text;
-        playRound(playerMove,getComputerChoice());
-        console.log(gameState['roundsPlayed'])
+
+        playerMove = button.getAttribute('data-value');
+        computerMove = getComputerChoice();
+        playRound(playerMove,computerMove);
         isGameOver()
+        updateDisplayScore()
 
         
     })
@@ -28,7 +44,7 @@ function playerChoice(button){
 function isGameOver() {
     buttons.forEach(button => {
 
-        if (gameState['roundsPlayed'] >= 5) {
+        if ((gameState['playerScore'] == 5) || (gameState['computerScore'] == 5)) {
             button.disabled = true;
         }
     })
@@ -41,58 +57,55 @@ function getComputerChoice() {
     return moves[Math.floor(Math.random() * 3)];
 }
 
-/*
-function getPlayerChoice(moves) {
-    
-    let move = prompt("What move would you like to make? ").toLowerCase();
-    while (true) {
-        if(!moves.includes(move)) {
-            move = prompt("Incorrect! What move would you like to make? ").toLowerCase();
-        } else {
-            return move;
-        }
-    }
-}
-*/
-
 function playRound(playerMove, computerMove) {
 
 
     if((playerMove == 'rock' && computerMove == 'scissors') || (playerMove == 'scissors' && computerMove == 'paper') || (playerMove == 'paper' && computerMove == 'rock') ) {
         gameState['playerScore'] += 1;
         gameState['roundsPlayed'] += 1;
+        roundWinner = 'player'
     } else if (playerMove == computerMove) {
         gameState['roundsPlayed'] += 1;
         gameState['number_of_draws'] +=1;
+        roundWinner = 'draw'
     } else {
         gameState['computerScore'] += 1;
         gameState['roundsPlayed'] += 1; 
+        roundWinner = 'computer'
     }
 
 
 }
+// Update Display Score
 
-gameState = {
-    'roundsPlayed':0,
-    'playerScore': 0,
-    'computerScore' : 0,
-    'number_of_draws' : 0,
-}
+function updateDisplayScore() {
+    playerScoreDisplay.innerText = `Player Score: ${gameState['playerScore']}`;
+    computerScoreDisplay.innerText = `Computer Score: ${gameState['computerScore']}`;
+    if(roundWinner == 'player') {
+        gameOverview.innerText = `${computerMove.toProperCase()} is beaten by ${playerMove.toProperCase()}`
+        gameResult.innerText = "You Won!"
+    } else if(roundWinner == 'computer') {
+        gameOverview.innerText = `${playerMove.toProperCase()} is beaten by ${computerMove.toProperCase()}`
+        gameResult.innerText = "You Lost!"
 
-
-
-
-// Play Five Rounds of Rock Paper Scissors
-
-
-/*
-for (let i = 1; i <= 5; i++) {
-    let computerMove = getComputerChoice(moves);
-    playRound(playerMove,computerMove);
-
-    if(i === 5) {
-        console.log('Player Score is: ',gameState['playerScore']);
-        console.log("Computer Score is: ", gameState['computerScore']);
+    } else {
+        gameOverview.innerText = `${playerMove.toProperCase()} ties with ${computerMove.toProperCase()}`
+        gameResult.innerText = "Draw!"
     }
 }
-*/
+
+function resetGame() {
+    gameState = {
+        'roundsPlayed':0,
+        'playerScore': 0,
+        'computerScore' : 0,
+        'number_of_draws' : 0,
+    }
+    gameResult.innerText = gameResultText;
+    gameOverview.innerText = gameOverviewText;
+    playerScoreDisplay.innerText = `Player Score is: ${gameState['playerScore']}`;
+    computerScoreDisplay.innerText = `Computer Score is: ${gameState['computerScore']}`;
+    buttons.forEach(button => button.disabled = false);
+}
+
+resetGame()
